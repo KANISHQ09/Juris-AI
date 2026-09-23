@@ -9,34 +9,29 @@ from backend.prompts import SYSTEM_PROMPT, QA_PROMPT
 
 
 # Define tools
-#--------------
+# --------------
 tools = [retrieve_docs]
 tools_by_name = {tool.name: tool for tool in tools}
 model_with_tools = model.bind_tools(tools)
 
+
 # LLM mode
-#---------
+# ---------
 def llm_call(state: dict):
     """LLM decides whether to call a tool or not"""
 
     return {
         "messages": [
             model_with_tools.invoke(
-                [
-                    SystemMessage(
-                        content=SYSTEM_PROMPT
-                    )
-                ]
-                + state["messages"]
+                [SystemMessage(content=SYSTEM_PROMPT)] + state["messages"]
             )
         ],
-        "llm_calls": state.get('llm_calls', 0) + 1
+        "llm_calls": state.get("llm_calls", 0) + 1,
     }
 
 
-
 # Tool Node
-#-----------
+# -----------
 def tool_node(state: dict):
     """Performs the tool call"""
 
@@ -50,8 +45,10 @@ def tool_node(state: dict):
             new_citations.extend(tool_message.artifact)
     return {"messages": result, "citations": new_citations}
 
+
 # Final answer Node
-#------------------
+# ------------------
+
 
 def final_answer(state: dict):
     """Produce final answer once tool loop is done, with deterministic citations"""
@@ -72,7 +69,9 @@ def final_answer(state: dict):
     )
     sources = "\n".join(f"[{c.number}] {c.label}" for c in kept_citations)
     content = (
-        f"{resolved_answer}\n\nSources:\n{sources}" if kept_citations else resolved_answer
+        f"{resolved_answer}\n\nSources:\n{sources}"
+        if kept_citations
+        else resolved_answer
     )
 
     return {
@@ -83,9 +82,6 @@ def final_answer(state: dict):
             )
         ]
     }
-
-
-
 
 
 def should_continue(state: MessagesState) -> Literal["tool_node", "final_answer"]:

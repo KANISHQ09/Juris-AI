@@ -1,12 +1,11 @@
 # Define vector store
-from backend.config import embeddings, vector_store
+from backend.config import vector_store
 from backend.citation import annotate_documents_for_citation, CITATION_MARKER_KEY
 from langchain.tools import tool
-from pathlib import Path
 
 
 @tool(response_format="content_and_artifact")
-def retrieve_docs(query:str):
+def retrieve_docs(query: str):
     """
     This function retrieve relevant docs from the vector store based on similarity search.
     Args:
@@ -21,4 +20,3 @@ def retrieve_docs(query:str):
     )
 
     return content, citations
-

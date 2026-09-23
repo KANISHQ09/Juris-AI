@@ -2,13 +2,17 @@ from langchain.messages import HumanMessage
 from backend.state import MessagesState
 from backend.graph import agent_builder_graph
 from backend.config import cache, CACHE_TTL
-from backend.citation import citations_to_cache_payload, cache_payload_to_result, Citation
+from backend.citation import (
+    citations_to_cache_payload,
+    cache_payload_to_result,
+    Citation,
+)
 from dotenv import load_dotenv
-from pathlib import Path
 import uuid
 
 
 load_dotenv()
+
 
 def agent_invoke(query: str, session_id: str | None = None):
     session_id = session_id or str(uuid.uuid4())

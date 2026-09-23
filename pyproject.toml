@@ -48,3 +48,10 @@ pythonpath = ["."]
 
 [tool.ruff]
 extend-exclude = ["*.ipynb"]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = [
+    "E501",
+]
