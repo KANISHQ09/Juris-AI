@@ -1,3 +1,5 @@
+const API_BASE = import.meta.env.VITE_API_URL || '${API_BASE}';
+
 import React, { useState, useRef, useEffect } from 'react';
 import {
   Scale, MessageSquare, FileDiff, Briefcase,
@@ -170,7 +172,7 @@ export function App() {
     setIsChatLoading(true);
 
     try {
-      const res = await fetch('http://localhost:8000/api/chat', {
+      const res = await fetch(`${API_BASE}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: userText })
@@ -190,7 +192,7 @@ export function App() {
         ...prev,
         {
           role: 'assistant',
-          content: 'Juris AI statutory guidance generated. Verify backend connection at http://localhost:8000.'
+          content: 'Juris AI statutory guidance generated. Verify backend connection at ${API_BASE}.'
         }
       ]);
     } finally {
@@ -206,7 +208,7 @@ export function App() {
     try {
       const form = new FormData();
       form.append('file', docFile);
-      const res = await fetch('http://localhost:8000/api/analyze', { method: 'POST', body: form });
+      const res = await fetch(`${API_BASE}/api/analyze`, { method: 'POST', body: form });
       if (!res.ok) throw new Error('Analysis failed');
       const data = await res.json();
       setAnalysisData(data.result || data);
@@ -252,7 +254,7 @@ export function App() {
       const form = new FormData();
       form.append('file_a', fileA);
       form.append('file_b', fileB);
-      const res = await fetch('http://localhost:8000/api/compare', { method: 'POST', body: form });
+      const res = await fetch(`${API_BASE}/api/compare`, { method: 'POST', body: form });
       if (!res.ok) throw new Error('Comparison failed');
       const data = await res.json();
       setComparisonData(data.result || data);
@@ -284,7 +286,7 @@ export function App() {
       const form = new FormData();
       form.append('file', prepFile);
       if (userConcerns) form.append('concerns', userConcerns);
-      const res = await fetch('http://localhost:8000/api/lawyer-prep', { method: 'POST', body: form });
+      const res = await fetch(`${API_BASE}/api/lawyer-prep`, { method: 'POST', body: form });
       if (!res.ok) throw new Error('Prep failed');
       const data = await res.json();
       setLawyerBriefing(data.result || data);
