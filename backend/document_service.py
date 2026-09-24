@@ -4,9 +4,17 @@ import json
 import logging
 import os
 from typing import Any, Dict
-import docx
 from dotenv import load_dotenv
-import pypdf
+
+try:
+    import docx
+except ImportError:
+    docx = None
+
+try:
+    import pypdf
+except ImportError:
+    pypdf = None
 
 load_dotenv()
 logger = logging.getLogger(__name__)
@@ -86,6 +94,8 @@ def extract_text_from_file(filename: str, content: bytes) -> str:
 
     lower = filename.lower()
     if lower.endswith(".pdf"):
+        if pypdf is None:
+            return content.decode("utf-8", errors="ignore").strip()
         reader = pypdf.PdfReader(io.BytesIO(content))
         text = ""
         for page in reader.pages:
@@ -94,6 +104,8 @@ def extract_text_from_file(filename: str, content: bytes) -> str:
                 text += t + "\n"
         return text.strip()
     elif lower.endswith(".docx"):
+        if docx is None:
+            return content.decode("utf-8", errors="ignore").strip()
         doc = docx.Document(io.BytesIO(content))
         return "\n".join([p.text for p in doc.paragraphs if p.text]).strip()
 
