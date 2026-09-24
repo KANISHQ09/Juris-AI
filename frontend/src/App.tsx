@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  Scale, MessageSquare, FileDiff, Briefcase,
+  Scale, Menu, X, MessageSquare, FileDiff, Briefcase,
   ShieldAlert, CheckCircle2, Send, Upload,
   AlertTriangle, FileCheck, HelpCircle, Sparkles,
   BookOpen, Loader2, ArrowRight, CheckSquare,
@@ -116,6 +116,7 @@ Parties agree to mutual 12-month non-solicitation of direct engineering personne
 
 export function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Chat State
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -352,7 +353,10 @@ export function App() {
         <button
           type="button"
           className="nav-brand"
-          onClick={() => setCurrentPage('home')}
+          onClick={() => {
+            setCurrentPage('home');
+            setIsMobileMenuOpen(false);
+          }}
           aria-label="Juris AI Home"
           style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', font: 'inherit' }}
         >
@@ -362,12 +366,28 @@ export function App() {
           <span>Juris AI</span>
         </button>
 
-        <nav className="nav-center-pills" aria-label="Main navigation">
+        <nav className={`nav-center-pills ${isMobileMenuOpen ? 'mobile-open' : ''}`} aria-label="Main navigation">
+          {isMobileMenuOpen && (
+            <div className="mobile-nav-header">
+              <span className="mobile-nav-title">Menu</span>
+              <button
+                type="button"
+                className="mobile-nav-close"
+                onClick={() => setIsMobileMenuOpen(false)}
+                aria-label="Close navigation menu"
+              >
+                <X size={20} aria-hidden="true" />
+              </button>
+            </div>
+          )}
           {navItems.map((item) => (
             <button
               key={item.key}
               className={`nav-pill-btn ${currentPage === item.key ? 'active' : ''}`}
-              onClick={() => setCurrentPage(item.key)}
+              onClick={() => {
+                setCurrentPage(item.key);
+                setIsMobileMenuOpen(false);
+              }}
               aria-current={currentPage === item.key ? ('page' as const) : undefined}
               aria-label={item.label}
             >
@@ -380,10 +400,23 @@ export function App() {
         <div className="nav-actions">
           <button
             className="btn-white-pill"
-            onClick={() => setCurrentPage('chat')}
+            onClick={() => {
+              setCurrentPage('chat');
+              setIsMobileMenuOpen(false);
+            }}
             aria-label="Start using Juris AI for free"
           >
             Start Free
+          </button>
+          <button
+            type="button"
+            className="mobile-hamburger-btn"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-nav-menu"
+          >
+            {isMobileMenuOpen ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
           </button>
         </div>
       </header>
@@ -597,7 +630,7 @@ export function App() {
                 <div className="feature-icon-wrap white">
                   <Gavel size={22} />
                 </div>
-                <h3>Start Now â€” It's Free</h3>
+                <h3>Start Now - It's Free</h3>
                 <p>No signup required. Upload any legal document or ask a question to experience AI-powered legal intelligence instantly.</p>
                 <div className="feature-card-footer">
                   <span>Launch Juris AI</span>
