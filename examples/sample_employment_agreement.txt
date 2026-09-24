@@ -1,0 +1,21 @@
+﻿STANDARD EMPLOYMENT AGREEMENT
+
+THIS AGREEMENT is entered into on January 15, 2026, by and between Apex Systems Inc. ("Employer") and Jane Doe ("Employee").
+
+1. POSITION AND DUTIES
+Employee shall serve as Senior Software Architect and perform all duties customarily associated with such role.
+
+2. COMPENSATION AND BENEFITS
+Employer agrees to pay Employee an annual base salary of $145,000, payable semi-monthly, subject to statutory tax deductions.
+
+3. TERMINATION AND NOTICE
+Either party may terminate this agreement without cause upon thirty (30) days prior written notice. Employer reserves the right to terminate immediately for Cause, defined as willful misconduct or material breach of company policy.
+
+4. INDEMNIFICATION
+Employer shall indemnify and hold harmless Employee against any third-party claims arising from the good-faith performance of her employment duties, subject to statutory limits.
+
+5. INTELLECTUAL PROPERTY
+Employee assigns all rights, title, and interest in any intellectual property created during employment hours or utilizing Employer equipment. Pre-existing works declared in Schedule A remain Employee property.
+
+6. GOVERNING LAW
+This agreement shall be governed by and construed in accordance with the laws of the State of California.

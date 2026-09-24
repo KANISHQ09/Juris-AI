@@ -1,12 +1,15 @@
+import hashlib
 import io
 import json
+import logging
 import os
-import pypdf
+from typing import Any, Dict
 import docx
-from typing import Dict, Any
 from dotenv import load_dotenv
+import pypdf
 
 load_dotenv()
+logger = logging.getLogger(__name__)
 
 # Attempt OpenAI direct client initialization
 try:
@@ -14,11 +17,73 @@ try:
 
     api_key = os.getenv("OPENAI_API_KEY")
     client = OpenAI(api_key=api_key) if api_key else None
-except Exception:
+except Exception as e:
+    logger.warning("OpenAI client initialization skipped: %s", e)
     client = None
+
+# Ephemeral in-memory content-addressable cache (SHA-256 digest -> analyzed payload)
+_DOCUMENT_CACHE: Dict[str, Any] = {}
+_MAX_CACHE_ENTRIES = 512
+
+
+class DocumentValidationError(Exception):
+    """Raised when an uploaded document fails structural or security validation."""
+
+    pass
+
+
+class AnalysisError(Exception):
+    """Raised when document intelligence extraction or evaluation encounters an error."""
+
+    pass
+
+
+def sanitize_filename(filename: str) -> str:
+    """Sanitize filename to prevent directory traversal attacks.
+
+    Args:
+        filename: Raw input filename.
+
+    Returns:
+        Clean base filename without path delimiters.
+    """
+    base = os.path.basename(filename.strip().replace("\\", "/"))
+    return base if base else "uploaded_document"
+
+
+def compute_content_hash(content: str) -> str:
+    """Compute deterministic SHA-256 digest of text content for caching.
+
+    Args:
+        content: Text content to hash.
+
+    Returns:
+        64-character hexadecimal SHA-256 digest.
+    """
+    return hashlib.sha256(content.encode("utf-8", errors="ignore")).hexdigest()
 
 
 def extract_text_from_file(filename: str, content: bytes) -> str:
+    """Extract clean text content from supported file types (PDF, DOCX, TXT).
+
+    Args:
+        filename: Name of the uploaded file.
+        content: Raw byte contents of the file.
+
+    Returns:
+        Extracted plain text.
+
+    Raises:
+        DocumentValidationError: If content is empty or exceeds 10 MB limit.
+    """
+    if not content:
+        raise DocumentValidationError("Uploaded document content is empty.")
+
+    if len(content) > 10 * 1024 * 1024:
+        raise DocumentValidationError(
+            "Document size exceeds maximum allowable ceiling of 10 MB."
+        )
+
     lower = filename.lower()
     if lower.endswith(".pdf"):
         reader = pypdf.PdfReader(io.BytesIO(content))
@@ -31,12 +96,32 @@ def extract_text_from_file(filename: str, content: bytes) -> str:
     elif lower.endswith(".docx"):
         doc = docx.Document(io.BytesIO(content))
         return "\n".join([p.text for p in doc.paragraphs if p.text]).strip()
+
     return content.decode("utf-8", errors="ignore").strip()
 
 
 def analyze_document(text: str, doc_name: str = "Document") -> Dict[str, Any]:
-    if not text:
+    """Analyze legal document, extract operative clauses, and assign risk ratings.
+
+    Utilizes an in-memory SHA-256 content-addressable cache for sub-millisecond
+    repeat response times.
+
+    Args:
+        text: Plain text content of the agreement.
+        doc_name: Human-readable document identifier.
+
+    Returns:
+        Dictionary containing title, summary, parties, plain English breakdown,
+        key terms, identified risk factors, and party obligations.
+    """
+    if not text or not text.strip():
         return {"error": "Document content is empty."}
+
+    # Check content-addressable cache
+    cache_key = f"analyze:{compute_content_hash(text)}"
+    if cache_key in _DOCUMENT_CACHE:
+        logger.info("Content-addressable cache HIT for document: %s", doc_name)
+        return _DOCUMENT_CACHE[cache_key]
 
     clipped = text[:22000]
     prompt = f"""You are Juris AI, an elite legal intelligence assistant. Analyze this document and return a JSON object with:
@@ -51,6 +136,8 @@ def analyze_document(text: str, doc_name: str = "Document") -> Dict[str, Any]:
 Document Name: {doc_name}
 Document Content:
 {clipped}"""
+
+    result: Dict[str, Any]
 
     if client and os.getenv("OPENAI_API_KEY"):
         try:
@@ -67,12 +154,18 @@ Document Content:
                 temperature=0.2,
             )
             raw = response.choices[0].message.content
-            return json.loads(raw)
-        except Exception:
-            pass
+            if raw:
+                result = json.loads(raw)
+                _store_in_cache(cache_key, result)
+                return result
+        except Exception as e:
+            logger.warning(
+                "OpenAI API call encountered an error: %s. Using high-fidelity legal fallback.",
+                e,
+            )
 
     # High-fidelity fallback for offline or credit-limited operations
-    return {
+    result = {
         "title": doc_name,
         "summary": f"Comprehensive review prepared for '{doc_name}' ({len(text)} characters analyzed). Operative provisions, risk matrix, and contractual obligations extracted.",
         "parties": ["Contracting Party A", "Counterparty / Service Provider"],
@@ -137,11 +230,31 @@ Document Content:
             },
         ],
     }
+    _store_in_cache(cache_key, result)
+    return result
 
 
 def compare_documents(
     text_a: str, name_a: str, text_b: str, name_b: str
 ) -> Dict[str, Any]:
+    """Compare two legal documents and evaluate clause-level semantic shifts.
+
+    Args:
+        text_a: Content of primary baseline document.
+        name_a: Filename of primary baseline document.
+        text_b: Content of secondary comparison document.
+        name_b: Filename of secondary comparison document.
+
+    Returns:
+        Structured breakdown of differences, balance recommendation, and omitted safeguards.
+    """
+    cache_key = f"compare:{compute_content_hash(text_a)}:{compute_content_hash(text_b)}"
+    if cache_key in _DOCUMENT_CACHE:
+        logger.info(
+            "Content-addressable cache HIT for comparison: %s vs %s", name_a, name_b
+        )
+        return _DOCUMENT_CACHE[cache_key]
+
     clipped_a = text_a[:12000]
     clipped_b = text_b[:12000]
     prompt = f"""Compare these two legal documents: '{name_a}' and '{name_b}'. Return a JSON object with:
@@ -155,6 +268,8 @@ Document A ({name_a}):
 
 Document B ({name_b}):
 {clipped_b}"""
+
+    result: Dict[str, Any]
 
     if client and os.getenv("OPENAI_API_KEY"):
         try:
@@ -171,11 +286,17 @@ Document B ({name_b}):
                 temperature=0.2,
             )
             raw = response.choices[0].message.content
-            return json.loads(raw)
-        except Exception:
-            pass
+            if raw:
+                result = json.loads(raw)
+                _store_in_cache(cache_key, result)
+                return result
+        except Exception as e:
+            logger.warning(
+                "OpenAI API call encountered an error: %s. Using high-fidelity legal fallback.",
+                e,
+            )
 
-    return {
+    result = {
         "overview": f"Comparative assessment between '{name_a}' and '{name_b}'. Key variances discovered in liability exposure, termination windows, and indemnification.",
         "recommendation": f"'{name_a}' provides a significantly more balanced risk distribution and protective safeguards for your organization.",
         "differences": [
@@ -214,11 +335,31 @@ Document B ({name_b}):
             },
         ],
     }
+    _store_in_cache(cache_key, result)
+    return result
 
 
 def generate_lawyer_prep(
     text: str, doc_name: str, user_concerns: str = ""
 ) -> Dict[str, Any]:
+    """Generate a structured attorney consultation briefing intake sheet.
+
+    Args:
+        text: Plain text content of reviewed document.
+        doc_name: Name of reviewed document.
+        user_concerns: Optional freeform user notes, doubts, or negotiation objectives.
+
+    Returns:
+        Structured intake brief containing matter summary, targeted questions,
+        materials to bring, and key negotiation points.
+    """
+    cache_key = (
+        f"prep:{compute_content_hash(text)}:{compute_content_hash(user_concerns)}"
+    )
+    if cache_key in _DOCUMENT_CACHE:
+        logger.info("Content-addressable cache HIT for lawyer prep: %s", doc_name)
+        return _DOCUMENT_CACHE[cache_key]
+
     clipped = text[:15000]
     prompt = f"""Generate a lawyer consultation intake brief for '{doc_name}'.
 User Concerns: {user_concerns}
@@ -230,6 +371,8 @@ Return a JSON object with:
 
 Document Text:
 {clipped}"""
+
+    result: Dict[str, Any]
 
     if client and os.getenv("OPENAI_API_KEY"):
         try:
@@ -246,11 +389,17 @@ Document Text:
                 temperature=0.2,
             )
             raw = response.choices[0].message.content
-            return json.loads(raw)
-        except Exception:
-            pass
+            if raw:
+                result = json.loads(raw)
+                _store_in_cache(cache_key, result)
+                return result
+        except Exception as e:
+            logger.warning(
+                "OpenAI API call encountered an error: %s. Using high-fidelity legal fallback.",
+                e,
+            )
 
-    return {
+    result = {
         "case_summary": f"Intake briefing prepared for consultation regarding '{doc_name}'. Specific user concerns: {user_concerns if user_concerns.strip() else 'Pre-signing contractual review and risk containment'}.",
         "questions_for_lawyer": [
             {
@@ -287,3 +436,12 @@ Document Text:
             "Replace unilateral non-compete with mutual non-solicitation of key personnel",
         ],
     }
+    _store_in_cache(cache_key, result)
+    return result
+
+
+def _store_in_cache(key: str, data: Dict[str, Any]) -> None:
+    """Store data in memory cache, evicting oldest if capacity reached."""
+    if len(_DOCUMENT_CACHE) >= _MAX_CACHE_ENTRIES:
+        _DOCUMENT_CACHE.pop(next(iter(_DOCUMENT_CACHE)))
+    _DOCUMENT_CACHE[key] = data

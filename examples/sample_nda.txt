@@ -1,0 +1,15 @@
+﻿MUTUAL NON-DISCLOSURE AGREEMENT
+
+This Mutual Non-Disclosure Agreement ("Agreement") is effective as of February 1, 2026, between Vertex Corp and Horizon Labs LLC.
+
+1. CONFIDENTIAL INFORMATION
+"Confidential Information" refers to any proprietary technical, financial, or business information disclosed by one party ("Discloser") to the other ("Recipient").
+
+2. NON-DISCLOSURE OBLIGATIONS
+Recipient agrees to protect Discloser's Confidential Information with the same degree of care it uses for its own confidential assets, but not less than reasonable care.
+
+3. TERM AND SURVIVAL
+This Agreement remains in effect for two (2) years from the effective date. Confidentiality covenants shall survive for three (3) years post-termination.
+
+4. REMEDIES AND JURISDICTION
+Parties acknowledge that unauthorized disclosure causes irreparable harm. Discloser may seek injunctive relief in addition to monetary damages in any court of competent jurisdiction.

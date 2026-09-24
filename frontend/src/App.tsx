@@ -383,7 +383,7 @@ export function App() {
           PAGE 1: HOME — LANDING PAGE
           ======================================================== */}
       {currentPage === 'home' && (
-        <>
+        <main id="main-content" tabIndex={-1}>
           {/* Hero Section */}
           <section className="hero-wrapper">
             <div className="hero-announcement">
@@ -638,14 +638,14 @@ export function App() {
               © 2025 Juris AI · GenAI Legal Intelligence Platform
             </p>
           </footer>
-        </>
+        </main>
       )}
 
       {/* ========================================================
           PAGE 2: LEGAL Q&A CHAT
           ======================================================== */}
       {currentPage === 'chat' && (
-        <main className="workspace-wrapper">
+        <main id="main-content" className="workspace-wrapper" tabIndex={-1}>
           <div className="workspace-header-bar">
             <div>
               <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-white)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
@@ -744,7 +744,7 @@ export function App() {
           PAGE 3: SIMPLIFY & SUMMARIZE
           ======================================================== */}
       {currentPage === 'simplify' && (
-        <main className="workspace-wrapper">
+        <main id="main-content" className="workspace-wrapper" tabIndex={-1}>
           <div className="workspace-header-bar">
             <div>
               <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-white)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
@@ -846,7 +846,7 @@ export function App() {
           PAGE 4: CONTRACT COMPARATOR
           ======================================================== */}
       {currentPage === 'compare' && (
-        <main className="workspace-wrapper">
+        <main id="main-content" className="workspace-wrapper" tabIndex={-1}>
           <div className="workspace-header-bar">
             <div>
               <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-white)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
@@ -983,7 +983,7 @@ export function App() {
           PAGE 5: RISK ANALYZER
           ======================================================== */}
       {currentPage === 'risks' && (
-        <main className="workspace-wrapper">
+        <main id="main-content" className="workspace-wrapper" tabIndex={-1}>
           <div className="workspace-header-bar">
             <div>
               <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-white)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
@@ -1099,7 +1099,7 @@ export function App() {
           PAGE 6: LAWYER PREP BRIEF
           ======================================================== */}
       {currentPage === 'lawyer' && (
-        <main className="workspace-wrapper">
+        <main id="main-content" className="workspace-wrapper" tabIndex={-1}>
           <div className="workspace-header-bar">
             <div>
               <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-white)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
