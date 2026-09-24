@@ -1,16 +1,8 @@
 [project]
-name = "lawglance"
+name = "juris-ai"
 version = "0.1.0"
-description = "Your AI-Powered Legal Assistan"
-authors = [{name = "https://lawglance.com/" }]
-maintainers = [
-    {name = "Sreejith G", email = "gsreejith828@gmail.com"},
-    {name = "Meenu Dev", email = "mee.dev03@gmail.com"},
-    {name = "Brijesh", email = "brijesh@curvelogics.com"},
-    {name = "Haritha C", email = "harithac.contactmail@gmail.com"},
-    {name = "Midhun M I", email = "midhunmi2011@gmail.com"},
-
-]
+description = "Juris AI - GenAI Legal Intelligence & Accessibility Platform"
+authors = [{name = "Juris AI Team", email = "contact@jurisai.example.com" }]
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL || '${API_BASE}';
+﻿const API_BASE = import.meta.env.VITE_API_URL || '${API_BASE}';
 
 import React, { useState, useRef, useEffect } from 'react';
 import {
@@ -225,7 +225,7 @@ export function App() {
           { term: 'Restrictive Covenant', definition: 'A contractual restriction on future activities, such as non-compete or non-solicitation provisions.' }
         ],
         plain_english_breakdown: [
-          { clause: 'Section 4: INDEMNITY & UNLIMITED LIABILITY', simplified: 'The service provider must pay ALL costs if anything goes wrong — even accidents or employee mistakes — with no cap on what they might owe. This is extremely one-sided and financially dangerous.' },
+          { clause: 'Section 4: INDEMNITY & UNLIMITED LIABILITY', simplified: 'The service provider must pay ALL costs if anything goes wrong â€” even accidents or employee mistakes â€” with no cap on what they might owe. This is extremely one-sided and financially dangerous.' },
           { clause: 'Section 8: TERMINATION FOR CONVENIENCE', simplified: 'The client can fire the provider instantly with just a written message. The provider gets no chance to fix any problems first. This gives the client total power to end the contract any time.' },
           { clause: 'Section 12: RESTRICTIVE COVENANTS', simplified: 'Provider\'s key employees cannot work for any competing company in all of North America for 3 years after the contract ends. This is an unusually broad and potentially unenforceable restriction.' }
         ],
@@ -308,9 +308,9 @@ export function App() {
           'Key personnel employment agreements (for non-compete analysis)'
         ],
         negotiation_leverage_points: [
-          'Propose mutual indemnification with aggregate cap of 1x annual contract fees — this is industry standard for comparable SaaS and professional services agreements.',
-          'Counter Section 8 with mandatory 30-day written cure period before termination is effective — this is standard in comparable commercial agreements.',
-          'Counter Section 12 with mutual 12-month non-solicitation limited to direct employees involved in the engagement — eliminates geographic overreach and establishes mutuality.',
+          'Propose mutual indemnification with aggregate cap of 1x annual contract fees â€” this is industry standard for comparable SaaS and professional services agreements.',
+          'Counter Section 8 with mandatory 30-day written cure period before termination is effective â€” this is standard in comparable commercial agreements.',
+          'Counter Section 12 with mutual 12-month non-solicitation limited to direct employees involved in the engagement â€” eliminates geographic overreach and establishes mutuality.',
           'If Client insists on uncapped liability, require corresponding D&O and E&O insurance with Client named as additional insured to commercially offset the exposure.'
         ]
       });
@@ -349,21 +349,29 @@ export function App() {
           STICKY FLOATING NAVBAR
           ======================================================== */}
       <header className="navbar-container">
-        <div className="nav-brand" onClick={() => setCurrentPage('home')}>
-          <div className="nav-brand-icon">
+        <button
+          type="button"
+          className="nav-brand"
+          onClick={() => setCurrentPage('home')}
+          aria-label="Juris AI Home"
+          style={{ background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', font: 'inherit' }}
+        >
+          <div className="nav-brand-icon" aria-hidden="true">
             <Scale size={22} />
           </div>
           <span>Juris AI</span>
-        </div>
+        </button>
 
-        <nav className="nav-center-pills">
+        <nav className="nav-center-pills" aria-label="Main navigation">
           {navItems.map((item) => (
             <button
               key={item.key}
               className={`nav-pill-btn ${currentPage === item.key ? 'active' : ''}`}
               onClick={() => setCurrentPage(item.key)}
+              aria-current={currentPage === item.key ? ('page' as const) : undefined}
+              aria-label={item.label}
             >
-              {item.icon}
+              <span aria-hidden="true">{item.icon}</span>
               <span>{item.label}</span>
             </button>
           ))}
@@ -373,6 +381,7 @@ export function App() {
           <button
             className="btn-white-pill"
             onClick={() => setCurrentPage('chat')}
+            aria-label="Start using Juris AI for free"
           >
             Start Free
           </button>
@@ -380,10 +389,11 @@ export function App() {
       </header>
 
       {/* ========================================================
-          PAGE 1: HOME — LANDING PAGE
+          PAGE 1: HOME â€” LANDING PAGE
           ======================================================== */}
       {currentPage === 'home' && (
-        <main id="main-content" tabIndex={-1}>
+        <div aria-live="polite" aria-atomic="true" className="sr-only" id="status-announcer" />
+        <main id="main-content" tabIndex={-1} aria-label="Juris AI Home">
           {/* Hero Section */}
           <section className="hero-wrapper">
             <div className="hero-announcement">
@@ -399,7 +409,7 @@ export function App() {
             <p className="hero-subtitle">
               Juris AI answers legal questions with statutory citations you can verify,
               simplifies complex contracts into plain English, compares document versions,
-              and prepares you for attorney consultations — all in seconds.
+              and prepares you for attorney consultations â€” all in seconds.
             </p>
 
             <div className="hero-buttons">
@@ -492,14 +502,14 @@ export function App() {
                 <div className="showcase-content-box">
                   <div className="citation-card-white">
                     <div className="citation-title">Okonjo v. Bellhaven Manufacturing Co.</div>
-                    <div className="citation-meta">102 F.4th 55 · 9th Cir. 2024 · Persuasive</div>
+                    <div className="citation-meta">102 F.4th 55 Â· 9th Cir. 2024 Â· Persuasive</div>
                     <div className="citation-snippet">
                       "Indemnity covenants must be interpreted strictly according to mutual intent."
                     </div>
                   </div>
                   <div className="citation-card-white">
-                    <div className="citation-title">Restatement (Second) of Contracts § 208</div>
-                    <div className="citation-meta">Unconscionable Contract or Term · Authority</div>
+                    <div className="citation-title">Restatement (Second) of Contracts Â§ 208</div>
+                    <div className="citation-meta">Unconscionable Contract or Term Â· Authority</div>
                     <div className="citation-snippet">
                       "Courts may refuse enforcement of clauses creating disproportionate forfeiture."
                     </div>
@@ -518,7 +528,7 @@ export function App() {
               </div>
               <h2 className="features-title">Everything you need to navigate legal complexity</h2>
               <p className="features-subtitle">
-                From statutory Q&A to attorney prep briefs — Juris AI covers the full spectrum of pre-counsel legal intelligence.
+                From statutory Q&A to attorney prep briefs â€” Juris AI covers the full spectrum of pre-counsel legal intelligence.
               </p>
             </div>
 
@@ -587,7 +597,7 @@ export function App() {
                 <div className="feature-icon-wrap white">
                   <Gavel size={22} />
                 </div>
-                <h3>Start Now — It's Free</h3>
+                <h3>Start Now â€” It's Free</h3>
                 <p>No signup required. Upload any legal document or ask a question to experience AI-powered legal intelligence instantly.</p>
                 <div className="feature-card-footer">
                   <span>Launch Juris AI</span>
@@ -635,7 +645,7 @@ export function App() {
               Consult licensed legal counsel for binding legal decisions.
             </p>
             <p style={{ fontSize: '0.8rem', marginTop: '0.5rem' }}>
-              © 2025 Juris AI · GenAI Legal Intelligence Platform
+              Â© 2025 Juris AI Â· GenAI Legal Intelligence Platform
             </p>
           </footer>
         </main>
@@ -645,14 +655,14 @@ export function App() {
           PAGE 2: LEGAL Q&A CHAT
           ======================================================== */}
       {currentPage === 'chat' && (
-        <main id="main-content" className="workspace-wrapper" tabIndex={-1}>
+        <main id="main-content" className="workspace-wrapper" tabIndex={-1} aria-label="Legal Q&A Chat">
           <div className="workspace-header-bar">
             <div>
               <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-white)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                 <MessageSquare size={24} color="var(--accent-cyan)" /> Legal Q&A Assistant
               </h2>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '0.35rem' }}>
-                Ask statutory questions, explore legal precedents, or get contract enforceability guidance — with verifiable citations.
+                Ask statutory questions, explore legal precedents, or get contract enforceability guidance â€” with verifiable citations.
               </p>
             </div>
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
@@ -670,7 +680,7 @@ export function App() {
           </div>
 
           <div className="chat-workspace">
-            <div className="chat-history">
+            <div className="chat-history" role="log" aria-live="polite" aria-label="Chat messages" aria-relevant="additions">
               {messages.map((msg, i) => (
                 <div key={i} className={`chat-msg ${msg.role}`}>
                   {msg.role === 'assistant' && (
@@ -724,16 +734,29 @@ export function App() {
               <div ref={chatBottomRef} />
             </div>
 
-            <form className="chat-input-bar" onSubmit={handleSendMessage}>
+            <form className="chat-input-bar" onSubmit={handleSendMessage} role="form" aria-label="Statutory query search">
+              <label htmlFor="legal-query-input" className="sr-only">Ask a statutory or legal question</label>
               <input
+                id="legal-query-input"
+                name="legal_query"
                 type="text"
                 placeholder="Ask a legal question (e.g. 'Is my non-compete clause enforceable?')"
                 value={inputQuery}
                 onChange={(e) => setInputQuery(e.target.value)}
                 disabled={isChatLoading}
+                aria-label="Ask a statutory or legal question"
               />
-              <button className="btn-send" type="submit" disabled={isChatLoading || !inputQuery.trim()}>
-                {isChatLoading ? <Loader2 size={18} className="spin-icon" /> : <Send size={18} />}
+              <button
+                className="btn-send"
+                type="submit"
+                disabled={isChatLoading || !inputQuery.trim()}
+                aria-label="Send statutory inquiry"
+              >
+                {isChatLoading ? (
+                  <Loader2 size={18} className="spin-icon" aria-hidden="true" />
+                ) : (
+                  <Send size={18} aria-hidden="true" />
+                )}
               </button>
             </form>
           </div>
@@ -744,7 +767,7 @@ export function App() {
           PAGE 3: SIMPLIFY & SUMMARIZE
           ======================================================== */}
       {currentPage === 'simplify' && (
-        <main id="main-content" className="workspace-wrapper" tabIndex={-1}>
+        <main id="main-content" className="workspace-wrapper" tabIndex={-1} aria-label="Contract Simplifier">
           <div className="workspace-header-bar">
             <div>
               <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-white)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
@@ -769,7 +792,7 @@ export function App() {
                 </div>
                 <input
                   type="file"
-                  id="file-simplify"
+                  id="file-simplify" aria-label="Upload document to simplify"
                   accept=".pdf,.docx,.txt"
                   onChange={(e) => setDocFile(e.target.files ? e.target.files[0] : null)}
                 />
@@ -846,7 +869,7 @@ export function App() {
           PAGE 4: CONTRACT COMPARATOR
           ======================================================== */}
       {currentPage === 'compare' && (
-        <main id="main-content" className="workspace-wrapper" tabIndex={-1}>
+        <main id="main-content" className="workspace-wrapper" tabIndex={-1} aria-label="Document Comparison">
           <div className="workspace-header-bar">
             <div>
               <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-white)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
@@ -872,7 +895,7 @@ export function App() {
                   </div>
                   <input
                     type="file"
-                    id="file-a"
+                    id="file-a" aria-label="Upload primary baseline document"
                     accept=".pdf,.docx,.txt"
                     onChange={(e) => setFileA(e.target.files ? e.target.files[0] : null)}
                   />
@@ -886,7 +909,7 @@ export function App() {
                   </div>
                   <input
                     type="file"
-                    id="file-b"
+                    id="file-b" aria-label="Upload counterparty comparison document"
                     accept=".pdf,.docx,.txt"
                     onChange={(e) => setFileB(e.target.files ? e.target.files[0] : null)}
                   />
@@ -983,14 +1006,14 @@ export function App() {
           PAGE 5: RISK ANALYZER
           ======================================================== */}
       {currentPage === 'risks' && (
-        <main id="main-content" className="workspace-wrapper" tabIndex={-1}>
+        <main id="main-content" className="workspace-wrapper" tabIndex={-1} aria-label="Risk Analyzer">
           <div className="workspace-header-bar">
             <div>
               <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-white)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                 <ShieldAlert size={24} color="#f43f5e" /> Risk & Obligation Analyzer
               </h2>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '0.35rem' }}>
-                Automated risk triage classifies clauses into High, Medium, and Low severity — and catalogs all contractual obligations.
+                Automated risk triage classifies clauses into High, Medium, and Low severity â€” and catalogs all contractual obligations.
               </p>
             </div>
             <button className="btn-glass-pill" onClick={() => loadDemoFile('analysis')}>
@@ -1008,7 +1031,7 @@ export function App() {
                 </div>
                 <input
                   type="file"
-                  id="file-risk"
+                  id="file-risk" aria-label="Upload document for risk analysis"
                   accept=".pdf,.docx,.txt"
                   onChange={(e) => setDocFile(e.target.files ? e.target.files[0] : null)}
                 />
@@ -1099,7 +1122,7 @@ export function App() {
           PAGE 6: LAWYER PREP BRIEF
           ======================================================== */}
       {currentPage === 'lawyer' && (
-        <main id="main-content" className="workspace-wrapper" tabIndex={-1}>
+        <main id="main-content" className="workspace-wrapper" tabIndex={-1} aria-label="Attorney Prep Brief">
           <div className="workspace-header-bar">
             <div>
               <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-white)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
@@ -1124,19 +1147,23 @@ export function App() {
                 </div>
                 <input
                   type="file"
-                  id="file-prep"
+                  id="file-prep" aria-label="Upload contract for attorney intake briefing"
                   accept=".pdf,.docx,.txt"
                   onChange={(e) => setPrepFile(e.target.files ? e.target.files[0] : null)}
                 />
               </label>
 
               <div style={{ width: '100%', maxWidth: '680px' }}>
+                <label htmlFor="lawyer-prep-concerns" className="sr-only">Specific doubts or consultation goals</label>
                 <textarea
+                  id="lawyer-prep-concerns"
+                  name="lawyer_prep_concerns"
                   rows={3}
                   style={{ width: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-strong)', borderRadius: '12px', padding: '0.85rem 1.25rem', color: 'var(--text-white)', fontSize: '0.9rem', outline: 'none', resize: 'vertical', boxSizing: 'border-box' }}
                   placeholder="Specific concerns (e.g. 'We want to avoid giving away our pre-existing IP and reduce termination notice...')"
                   value={userConcerns}
                   onChange={(e) => setUserConcerns(e.target.value)}
+                  aria-label="Specific doubts or consultation goals"
                 />
               </div>
 

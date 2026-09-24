@@ -1,0 +1,18 @@
+﻿{
+  "name": "Juris AI - Legal Intelligence Platform",
+  "short_name": "Juris AI",
+  "description": "GenAI-powered legal intelligence: statutory Q&A, contract simplification, risk analysis, and attorney prep.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#070a11",
+  "theme_color": "#38bdf8",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
