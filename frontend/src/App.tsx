@@ -387,12 +387,12 @@ export function App() {
           </button>
         </div>
       </header>
+      <div aria-live="polite" aria-atomic="true" className="sr-only" id="status-announcer" />
 
       {/* ========================================================
           PAGE 1: HOME â€” LANDING PAGE
           ======================================================== */}
       {currentPage === 'home' && (
-        <div aria-live="polite" aria-atomic="true" className="sr-only" id="status-announcer" />
         <main id="main-content" tabIndex={-1} aria-label="Juris AI Home">
           {/* Hero Section */}
           <section className="hero-wrapper">
